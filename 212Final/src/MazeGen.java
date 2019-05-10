@@ -1,73 +1,92 @@
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import javax.swing.JFrame;
 
-import java.awt.Canvas;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Color;
-import java.awt.Graphics2D;
+
 
 public class MazeGen {
 	
-	
+	// Logical width, aka number of cells across
 	int WIDTH;
 	
+	// Logical height, number of cells down
 	int HEIGHT;
 	
-	int tw;
+	// list containing up, down, left, and right for random sampling
+	List<String> wallIndices = new ArrayList<>();
 	
-	int th;
-	
+	// list of visited cells
 	List<cell> visited;
 	
+	// list of dead end cells
+	List<cell> deadEnd;
+	
+	// current position
 	cell position;
 	
+	// the cell structure that keeps track of the cells
 	CellStructure struct;
+	
+	// whether or not the generator has finished
+	static boolean finished = false;
 
+	
+	// Initializing the maze generator
 	public MazeGen() {
 		
 		WIDTH = 10;
 		
 		HEIGHT = 10;
 		
-		tw = 10;
-		
-		th = 10;
-		
 		struct = new CellStructure(WIDTH, HEIGHT);
 		
 		visited = new ArrayList<>();
 		
+		deadEnd = new ArrayList<>();
+		
+		finished = false;
+		
+		//setup the wallindices list
+		wallIndices.add("up");
+		wallIndices.add("down");
+		wallIndices.add("left");
+		wallIndices.add("right");
+		
 	}
 
 	public static void main(String[] args) {
-		//Use PlayFish as a template for the world drawing
-		System.out.println("Test");
-		MazeGen x = new MazeGen();
-		x.generateMaze();
+		//initialize the graphics stuff
+		JFrame frame = new JFrame("MazeGen");
+		MazeGen gen = new MazeGen();
+		MazeGraphic graphic = new MazeGraphic();
+		graphic.getMaze(gen);
+		frame.add(graphic);
+		frame.setVisible(true);
+		frame.setSize(400,420);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setResizable(false);
+		
+		//generate the maze
+		gen.generateMaze(graphic);
+		  
 		
 	}
 	
-	public void generateMaze() {
+	public void generateMaze(MazeGraphic graphic) {
 		//Pick starting spot
 		Random rand = new Random();
 		int startx = rand.nextInt(this.WIDTH);
 		int starty = rand.nextInt(this.HEIGHT);
 		cell start = struct.find(startx, starty);
 		start.visited = true;
+		
+		//set that starting spot to the current position
 		position = start;
 		visited.add(start);
-		
-		JFrame world = new JFrame("MazeGen");
-		Canvas canvas = new Canvas();
-		canvas.setSize(1000,1000);
-		world.add(canvas);
-		world.pack();
-        world.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        world.setVisible(true);
         
 		
 		while (true) {
@@ -77,52 +96,99 @@ public class MazeGen {
 			 * if not, remove the wall of the position cell and the wall of the destination cell
 			 * mark destination cell as visited
 			 */
-			int index = rand.nextInt(3);
-			String direction = position.walls.get(index);
-			position.walls.remove(index);
-			// REMOVE THE WALL
-			if(direction.equals("up")) {
-				position = struct.find(position.getX(), position.getY() - 1);
-				position.walls.remove(1);
-			} else if(direction.equals("down")) {
-				position = struct.find(position.getX(), position.getY() + 1);
-				position.walls.remove(0);
-			} else if(direction.equals("left")) {
-				position = struct.find(position.getX() - 1, position.getY());
-				position.walls.remove(3);
-			} else if(direction.equals("right")) {
-				position = struct.find(position.getX() + 1, position.getY());
-				position.walls.remove(2);
+			
+			//setting up variables
+			boolean newCellFound = false;
+			int wallIndex = -1;
+			cell newcell = null;
+			
+			//A set of all the directions tried this iteration
+			Set<String> checked = new HashSet<>();
+			
+			//While we haven't found a valid new cell, keep checking adjacent cells
+			while (newCellFound == false) {
+				wallIndex = rand.nextInt(4);
+				
+				//If we've checked all directions
+				if (checked.size() == 4) {	
+					//move this cell to the deadEnd list from the visited list
+					deadEnd.add(position);
+					visited.remove(visited.size() - 1);
+					checked.removeAll(checked);
+					//if this was the last item in visited, we're done
+					if (visited.size() == 0) {
+						finished = true;
+						break;
+					}
+					//set position to the last of the visited list
+					position = visited.get(visited.size() - 1);
+				}
+				String direction = wallIndices.get(wallIndex);
+				
+				//Get the cell in the chosen direction
+				try {
+					if(direction.equals("up")) {
+						newcell = struct.find(position.getX(), position.getY() - 1);			
+					} else if(direction.equals("down")) {
+						newcell = struct.find(position.getX(), position.getY() + 1);
+					} else if(direction.equals("left")) {
+						newcell = struct.find(position.getX() - 1, position.getY());
+					} else if(direction.equals("right")) {
+						newcell = struct.find(position.getX() + 1, position.getY());
+					}
+				} catch (IndexOutOfBoundsException e) {
+					newCellFound = false;
+					checked.add(direction);
+					System.out.println("Bad direction!");
+					continue;
+					
+				}
+				//If the new cell is not visited or a dead end
+				if (!isVisited(newcell.getX(), newcell.getY()) && !isDeadEnd(newcell.getX(), 
+						newcell.getY()) && newcell.isWithinBounds(struct)) {
+					newCellFound = true;
+					checked.removeAll(checked);
+					System.out.println("New cell found!");
+					
+				} else {
+					newCellFound = false;
+					checked.add(direction);
+					continue;
+				}
+			
 			}
+			if (finished == true) {
+				break;
+			}
+			position = newcell;
 			position.visited = true;
-			this.visited.add(position);
+			visited.add(position);
+			graphic.repaint();
+			try {Thread.sleep(100);} catch (Exception e) {}
 			
 		}
-		
+	
+		System.out.println("Finished!");
 	}
 	
-	public void paint(Graphics g) {
-		g.fillOval(100, 100, 200, 200);
-	}
-	/*
-	public void draw(Graphics2D g) {
-		// Background of window is dark-dark green.
-		Color gray = new Color(128,128,128);
-		g.setColor(gray);
-		g.fillRect(0, 0, WIDTH*tw, HEIGHT*th);
-
-		// Draw the ocean (not the whole screen).
-		g.setColor(gray);
-		g.fillRect(0, 0, tw * WIDTH, th * HEIGHT);
-		// Draw a grid to better picture how the game works.
-		g.setColor(gray.darker().darker());
-		for (int x = 0; x < WIDTH; x++) {
-			for (int y = 0; y < HEIGHT; y++) {
-				g.drawRect(x * tw, y * th, tw, th);
+	public boolean isVisited(int x, int y) {
+		boolean found = false;
+		for(cell c: visited) {
+			if(c.getY() == y && c.getX() == x) {
+				found = true;
 			}
 		}
-		
-
+		return found;
 	}
-	*/
+	
+	public boolean isDeadEnd(int x, int y) {
+		boolean found = false;
+		for(cell c: deadEnd) {
+			if(c.getY() == y && c.getX() == x) {
+				found = true;
+			}
+		}
+		return found;
+	}
+
 }

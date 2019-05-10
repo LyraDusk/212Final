@@ -46,6 +46,7 @@ public class CellStructure {
 		}
 	}
 	
+	
 	public void register(cell c) {
 		this.cellList.add(c);
 	}
