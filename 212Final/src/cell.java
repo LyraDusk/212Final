@@ -25,10 +25,7 @@ public class cell {
 		down = true;
 		left = true;
 		right = true;
-		if (x == 9) {right = false;}
-		if (x == 0) {left = false;}
-		if (y == 9) {down = false;}
-		if(y == 0) {up = false;}
+
 	}
 	
 	public boolean visited() {

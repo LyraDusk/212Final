@@ -28,6 +28,9 @@ public class MazeGen {
 	// current position
 	cell position;
 	
+	// starting cell
+	cell start;
+	
 	// the cell structure that keeps track of the cells
 	CellStructure struct;
 	
@@ -81,7 +84,7 @@ public class MazeGen {
 		Random rand = new Random();
 		int startx = rand.nextInt(this.WIDTH);
 		int starty = rand.nextInt(this.HEIGHT);
-		cell start = struct.find(startx, starty);
+		start = struct.find(startx, starty);
 		start.visited = true;
 		
 		//set that starting spot to the current position
@@ -128,7 +131,7 @@ public class MazeGen {
 				//Get the cell in the chosen direction
 				try {
 					if(direction.equals("up")) {
-						newcell = struct.find(position.getX(), position.getY() - 1);			
+						newcell = struct.find(position.getX(), position.getY() - 1);
 					} else if(direction.equals("down")) {
 						newcell = struct.find(position.getX(), position.getY() + 1);
 					} else if(direction.equals("left")) {
@@ -149,6 +152,19 @@ public class MazeGen {
 					newCellFound = true;
 					checked.removeAll(checked);
 					System.out.println("New cell found!");
+					if (direction == "up") {
+						newcell.down = false;
+						position.up = false;
+					} else if (direction == "down") {
+						newcell.up = false;
+						position.down = false;
+					} else if (direction == "left") {
+						newcell.right = false;
+						position.left = false;
+					} else if (direction == "right") {
+						newcell.left = false;
+						position.right = false;
+					}
 					
 				} else {
 					newCellFound = false;
@@ -158,6 +174,7 @@ public class MazeGen {
 			
 			}
 			if (finished == true) {
+				graphic.repaint();
 				break;
 			}
 			position = newcell;
@@ -180,6 +197,15 @@ public class MazeGen {
 		}
 		return found;
 	}
+	
+	public boolean isStart(int x, int y) {
+		if(start.getY() == y && start.getX() == x) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	
 	public boolean isDeadEnd(int x, int y) {
 		boolean found = false;
