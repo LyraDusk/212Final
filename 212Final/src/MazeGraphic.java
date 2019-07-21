@@ -3,30 +3,44 @@ import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
+/*
+ * The graphical engine of the generator
+ */
 public class MazeGraphic extends JPanel {
 	int x = 0;
 	int y = 0;
 	MazeGen gen;
+	int xmax;
+	int ymax;
+	int multiplier;
 	CellStructure struct;
 	boolean setup = false;
 	
+	//Gets a reference to the MazeGen and CellStructure (I didn't want to deal with overwriting the constructor)
 	public void getMaze(MazeGen maze) {
 		this.gen = maze;
 		this.struct = gen.struct;
+		this.xmax = MazeGen.WIDTH;
+		this.ymax = MazeGen.HEIGHT;
+		this.multiplier = MazeGen.MULT;
 	}
 	
 	
 	public void paint(Graphics g) {
 		super.paint(g);
 		
+		//First time, fill the board with background gray
 		if (setup == false) {
 			g.setColor(Color.gray);
-			g.fillRect(0,0,400,400);
+			g.fillRect(0,0,xmax * multiplier,ymax * multiplier);
 			setup = true;
 		}
 		g.setColor(Color.white);
-		for (x = 0; x < 10; x++) {
-			for (y = 0; y < 10; y ++) {
+		
+		// For every grid square (Every x, and then every y for each x)
+		for (x = 0; x < xmax; x++) {
+			for (y = 0; y < ymax; y ++) {
+				//Sets the color to correspond to cell status (Blue is visited, Cyan is start, Orange is dead end)
 				if (this.gen.isVisited(x,y)) {
 					g.setColor(Color.blue);
 				} else if (gen.isDeadEnd(x, y)) {
@@ -38,27 +52,21 @@ public class MazeGraphic extends JPanel {
 					g.setColor(Color.cyan);
 				}
 				//Fill in the square
-				int x_act = x * 40 + 10;
-				int y_act = y * 40 + 10;
-				g.fillRect(x_act, y_act, 20,20);
+				int x_act = x * multiplier + multiplier/4;
+				int y_act = y * multiplier + multiplier/4;
+				g.fillRect(x_act, y_act, multiplier/2,multiplier/2);
 				
 				//Fill in the missing walls
 				cell currentpos = this.struct.find(x, y);
 				if (currentpos.down == false) {
-					int ywall = y * 40 + 30;
-					g.fillRect(x_act, ywall, 20, 20);
+					int ywall = y * multiplier + multiplier * 3/4;
+					g.fillRect(x_act, ywall, multiplier/2, multiplier/2);
 				} 
 				if (currentpos.right == false) {
-					int xwall = x * 40 + 30;
-					g.fillRect(xwall, y_act, 20, 20);
+					int xwall = x * multiplier + multiplier * 3/4;
+					g.fillRect(xwall, y_act, multiplier/2, multiplier/2);
 				} 
-				
 			}
 		}
 	}
-		
-		
-	
-	
-	
 }
