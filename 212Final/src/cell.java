@@ -41,7 +41,7 @@ public class cell {
 	
 	//Returns the logical y value
 	public int getY() {
-		return this.y;
+		return y;
 	}
 	
 	//Checks if the cell is within the structure bounds
@@ -55,6 +55,6 @@ public class cell {
 	
 	//returns the logical x value
 	public int getX() {
-		return this.x;
+		return x;
 	}
 }

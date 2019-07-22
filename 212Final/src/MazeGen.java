@@ -12,15 +12,15 @@ import javax.swing.JFrame;
 public class MazeGen {
 	
 	// Logical width, aka number of cells across
-	// Reccomended Minimum 5
+	// Recommended Minimum 5
 	static int WIDTH;
 	
 	// Logical height, number of cells down
-	// Reccomended Minimum 5
+	// Recommended Minimum 5
 	static int HEIGHT;
 	
 	// Graphical Grid Multiplier (MUST BE DIVISBLE BY 2)
-	// Reccomended Minimum 16 for good performance, can go smaller for large logical grids
+	// Recommended Minimum 16 for good performance, can go smaller for large logical grids
 	static int MULT;
 	
 	// Speed of Generator (Sleep time in ms)
@@ -51,13 +51,13 @@ public class MazeGen {
 	// Initializing the maze generator
 	public MazeGen() {
 		
-		WIDTH = 40;
+		WIDTH = 30;
 		
-		HEIGHT = 40;
+		HEIGHT = 30;
 		
-		MULT = 20;
+		MULT = 10;
 		
-		WAIT = 100;
+		WAIT = 10;
 		
 		struct = new CellStructure(WIDTH, HEIGHT);
 		
@@ -83,7 +83,7 @@ public class MazeGen {
 		graphic.getMaze(gen);
 		frame.add(graphic);
 		frame.setVisible(true);
-		frame.setSize(WIDTH * MULT, HEIGHT * MULT + 20);
+		frame.setSize(WIDTH * MULT + 20, HEIGHT * MULT + 40);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
 		
@@ -94,6 +94,15 @@ public class MazeGen {
 	}
 	
 	public void generateMaze(MazeGraphic graphic) {
+		//Initialize the grid
+		for(int x = 0; x < WIDTH; x++) {
+			System.out.println("Initializing grid row " + (x + 1));
+			for(int y = 0; y < HEIGHT; y ++) {
+				cell c = new cell(x, y);
+				struct.register(c);
+			}
+		}
+		
 		//Pick starting spot
 		Random rand = new Random();
 		int startx = rand.nextInt(WIDTH);
@@ -150,7 +159,7 @@ public class MazeGen {
 						newcell = struct.find(position.getX(), position.getY() + 1);
 					} else if(direction.equals("left")) {
 						newcell = struct.find(position.getX() - 1, position.getY());
-					} else if(direction.equals("right")) {
+					} else/* if(direction.equals("right"))*/ {
 						newcell = struct.find(position.getX() + 1, position.getY());
 					}
 				} catch (IndexOutOfBoundsException e) {
@@ -197,9 +206,10 @@ public class MazeGen {
 			//Move position to the new cell, mark as visited
 			position = newcell;
 			position.visited = true;
+		//	System.out.println(position);
 			visited.add(position);
 			try {Thread.sleep(WAIT);} catch (Exception e) {}
-		//	graphic.repaint();
+			graphic.repaint();
 			
 			
 		}
@@ -207,11 +217,20 @@ public class MazeGen {
 		System.out.println("Finished!");
 	}
 	//Checks if the given x and y correspond to a visited cell
-	public boolean isVisited(int x, int y) {
+	public boolean isVisited(int x, int y) { //TODO: Nulls getting into the visited list??
 		boolean found = false;
+		if(visited.size() < 1) {
+			return found;
+		}
 		for(cell c: visited) {
-			if(c.y == y && c.x == x) {
+			try {
+			if(c.getY() == y && c.getX() == x) {
 				found = true;
+			}
+			} catch (Exception e) {
+				System.out.println("Cell missing at " + x + " x and " + y + " y.");
+				System.out.println(c);
+				return false;
 			}
 		}
 		return found;
@@ -226,11 +245,11 @@ public class MazeGen {
 		}
 	}
 	
-	//Checks if the given x and y correpond to a cell in the dead end list
+	//Checks if the given x and y correspond to a cell in the dead end list
 	public boolean isDeadEnd(int x, int y) {
 		boolean found = false;
 		for(cell c: deadEnd) {
-			if(c.y == y && c.x == x) {
+			if(c.getY() == y && c.getX() == x) {
 				found = true;
 			}
 		}
