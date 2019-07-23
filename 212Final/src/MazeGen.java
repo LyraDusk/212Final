@@ -57,7 +57,7 @@ public class MazeGen {
 		
 		MULT = 10;
 		
-		WAIT = 10;
+		WAIT = 15;
 		
 		struct = new CellStructure(WIDTH, HEIGHT);
 		
@@ -114,7 +114,7 @@ public class MazeGen {
 		position = start;
 		visited.add(start);
         
-		
+		mainloop: 
 		while (true) {
 			/*
 			 * From position choose random direction
@@ -139,9 +139,16 @@ public class MazeGen {
 				if (checked.size() == 4) {	
 					//move this cell to the deadEnd list from the visited list
 					deadEnd.add(position);
+					position.deadend = true;
 					visited.remove(visited.size() - 1);
 					position.visited = false;
 					checked.removeAll(checked);
+					if (visited.size() != 0) {
+						position = visited.get(visited.size() - 1);
+						try {Thread.sleep(WAIT);} catch (Exception e) {}
+						graphic.repaint();
+						continue mainloop;
+					}
 					//if this was the last item in visited, we're done
 					if (visited.size() == 0) {
 						finished = true;
@@ -216,6 +223,8 @@ public class MazeGen {
 		// Done!
 		System.out.println("Finished!");
 	}
+		
+	
 	//Checks if the given x and y correspond to a visited cell
 	public boolean isVisited(int x, int y) { 
 		cell c = struct.find(x, y);
@@ -233,13 +242,8 @@ public class MazeGen {
 	
 	//Checks if the given x and y correspond to a cell in the dead end list
 	public boolean isDeadEnd(int x, int y) {
-		boolean found = false;
-		for(cell c: deadEnd) {
-			if(c.getY() == y && c.getX() == x) {
-				found = true;
-			}
-		}
-		return found;
+		cell c = struct.find(x, y);
+		return c.deadEnd();
 	}
 	
 

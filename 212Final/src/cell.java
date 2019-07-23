@@ -23,6 +23,8 @@ public class cell {
 	//Whether the cell has been visited
 	boolean visited;
 	
+	boolean deadend;
+	
 	public cell(int x, int y) {
 		this.x = x;
 		this.y = y;
@@ -31,7 +33,13 @@ public class cell {
 		down = true;
 		left = true;
 		right = true;
+		deadend = false;
 
+	}
+	
+	//Whether the cell is a dead end
+	public boolean deadEnd() {
+		return this.deadend;
 	}
 	
 	//Whether the cell has been visited

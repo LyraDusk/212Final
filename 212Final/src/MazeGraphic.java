@@ -38,14 +38,14 @@ public class MazeGraphic extends JPanel {
 			for (y = 0; y < ymax; y ++) {
 				//Sets the color to correspond to cell status (Blue is visited, Cyan is start, Orange is dead end)
 				if (this.gen.isVisited(x,y)) {
-					g.setColor(Color.blue);
+					g.setColor(Color.cyan);
 				} else if (gen.isDeadEnd(x, y)) {
-					g.setColor(Color.green);
+					g.setColor(Color.black);
 				} else {
 					g.setColor(Color.white);
 				} 
 				if (this.gen.isStart(x, y)) {
-					g.setColor(Color.cyan);
+					g.setColor(Color.red);
 				}
 				//Fill in the square
 				int x_act = x * multiplier + multiplier/4;
