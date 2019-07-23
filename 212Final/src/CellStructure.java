@@ -26,16 +26,23 @@ public class CellStructure {
 	 */
 	List<cell> cellList = new ArrayList<>();
 	
+	cell[][] fastlist;
+	
 	public CellStructure(int x, int y){
 		this.root = new cell(0,0);
 		XMAX = x;
 		YMAX = y;
+		fastlist = new cell[x][y];
 		this.cellList.add(root);
 	}
 	
 	// returns the specified cell, or creates it and registers it if it doesn't exist
 	public cell find(int x, int y) {
 		
+		cell c = fastlist[x][y];
+		return c;
+		
+		/*
 		cell found = null;
 		boolean finished = false;
 		
@@ -61,11 +68,14 @@ public class CellStructure {
 		}
 		
 		throw new IndexOutOfBoundsException("Cell not found!");
+		*/
 		
 	}
 	
 	// Adds the cell to its list of cells
 	public void register(cell c) {
-		this.cellList.add(c);
+		int x = c.getX();
+		int y = c.getY();
+		fastlist[x][y] = c;
 	}
 }

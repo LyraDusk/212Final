@@ -51,13 +51,13 @@ public class MazeGen {
 	// Initializing the maze generator
 	public MazeGen() {
 		
-		WIDTH = 30;
+		WIDTH = 3000;
 		
-		HEIGHT = 30;
+		HEIGHT = 3000;
 		
-		MULT = 10;
+		MULT = 2;
 		
-		WAIT = 15;
+		WAIT = 0;
 		
 		struct = new CellStructure(WIDTH, HEIGHT);
 		
