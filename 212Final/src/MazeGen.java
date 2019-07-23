@@ -140,6 +140,7 @@ public class MazeGen {
 					//move this cell to the deadEnd list from the visited list
 					deadEnd.add(position);
 					visited.remove(visited.size() - 1);
+					position.visited = false;
 					checked.removeAll(checked);
 					//if this was the last item in visited, we're done
 					if (visited.size() == 0) {
@@ -218,22 +219,8 @@ public class MazeGen {
 	}
 	//Checks if the given x and y correspond to a visited cell
 	public boolean isVisited(int x, int y) { //TODO: Nulls getting into the visited list??
-		boolean found = false;
-		if(visited.size() < 1) {
-			return found;
-		}
-		for(cell c: visited) {
-			try {
-			if(c.getY() == y && c.getX() == x) {
-				found = true;
-			}
-			} catch (Exception e) {
-				System.out.println("Cell missing at " + x + " x and " + y + " y.");
-				System.out.println(c);
-				return false;
-			}
-		}
-		return found;
+		cell c = struct.find(x, y);
+		return c.visited;
 	}
 	
 	//Checks if the given x and y correspond to the starter cell
