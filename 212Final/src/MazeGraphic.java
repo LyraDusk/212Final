@@ -29,12 +29,8 @@ public class MazeGraphic extends JPanel {
 	public void paint(Graphics g) {
 		super.paint(g);
 		
-		//First time, fill the board with background gray
-		if (setup == false) {
-			g.setColor(Color.gray);
-			g.fillRect(0,0,xmax * multiplier,ymax * multiplier);
-			setup = true;
-		}
+		g.setColor(Color.lightGray);
+		g.fillRect(0,0,xmax * multiplier,ymax * multiplier);
 		g.setColor(Color.white);
 		
 		// For every grid square (Every x, and then every y for each x)
@@ -44,7 +40,7 @@ public class MazeGraphic extends JPanel {
 				if (this.gen.isVisited(x,y)) {
 					g.setColor(Color.blue);
 				} else if (gen.isDeadEnd(x, y)) {
-					g.setColor(Color.orange);
+					g.setColor(Color.green);
 				} else {
 					g.setColor(Color.white);
 				} 

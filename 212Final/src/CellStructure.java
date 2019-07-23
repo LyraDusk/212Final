@@ -61,15 +61,7 @@ public class CellStructure {
 		}
 		
 		throw new IndexOutOfBoundsException("Cell not found!");
-		/*
-		// If the cell doesn't exist and is within bounds, make it
-		if(x < XMAX && y < YMAX ) {
-			cell c = new cell(x, y);
-			this.cellList.add(c);
-			return c;
-		} else {
-			throw new IndexOutOfBoundsException("X or Y index out of grid boundary!");
-		}*/
+		
 	}
 	
 	// Adds the cell to its list of cells

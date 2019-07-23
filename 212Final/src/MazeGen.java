@@ -207,7 +207,6 @@ public class MazeGen {
 			//Move position to the new cell, mark as visited
 			position = newcell;
 			position.visited = true;
-		//	System.out.println(position);
 			visited.add(position);
 			try {Thread.sleep(WAIT);} catch (Exception e) {}
 			graphic.repaint();
@@ -218,7 +217,7 @@ public class MazeGen {
 		System.out.println("Finished!");
 	}
 	//Checks if the given x and y correspond to a visited cell
-	public boolean isVisited(int x, int y) { //TODO: Nulls getting into the visited list??
+	public boolean isVisited(int x, int y) { 
 		cell c = struct.find(x, y);
 		return c.visited;
 	}
