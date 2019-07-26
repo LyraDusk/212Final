@@ -46,18 +46,22 @@ public class MazeGen {
 	
 	// whether or not the generator has finished
 	static boolean finished = false;
-
+	
+	//True: Finishing point is always on an edge
+	//False: Finishing point could be edge or central
+	//The ending point is always a dead end with three walls.
+	static boolean edgeFinish = true;
 	
 	// Initializing the maze generator
 	public MazeGen() {
 		
-		WIDTH = 3000;
+		WIDTH = 10;
 		
-		HEIGHT = 3000;
+		HEIGHT = 10;
 		
-		MULT = 2;
+		MULT = 40;
 		
-		WAIT = 0;
+		WAIT = 5;
 		
 		struct = new CellStructure(WIDTH, HEIGHT);
 		
@@ -96,7 +100,7 @@ public class MazeGen {
 	public void generateMaze(MazeGraphic graphic) {
 		//Initialize the grid
 		for(int x = 0; x < WIDTH; x++) {
-			System.out.println("Initializing grid row " + (x + 1));
+			System.out.println("Initializing grid row " + (x + 1) + "/" + WIDTH);
 			for(int y = 0; y < HEIGHT; y ++) {
 				cell c = new cell(x, y);
 				struct.register(c);
@@ -106,7 +110,10 @@ public class MazeGen {
 		//Pick starting spot
 		Random rand = new Random();
 		int startx = rand.nextInt(WIDTH);
-		int starty = rand.nextInt(HEIGHT);
+		int starty = rand.nextInt(HEIGHT);;
+		//OVERRIDE
+		//starty = 0;
+		//startx = 0;
 		start = struct.find(startx, starty);
 		start.visited = true;
 		
@@ -208,6 +215,56 @@ public class MazeGen {
 			}
 			// Are we done?
 			if (finished == true) {
+				boolean finishFound = false;
+				
+				while (finishFound == false) {
+					if(!edgeFinish) {
+					int endY = rand.nextInt(HEIGHT);
+					int endX = rand.nextInt(WIDTH);
+					cell last = struct.find(endX, endY);
+					int walls = 0;
+					if(last.up) {walls ++;}
+					if(last.down) {walls ++;}
+					if(last.right) {walls ++;}
+					if(last.left) {walls ++;}
+				
+					if(walls == 3 && last != start) {
+						last.finish = true;
+						break;
+					} 
+					}
+					
+					if(edgeFinish) {
+						cell last;
+						int endY = rand.nextInt(HEIGHT);
+						int endX = rand.nextInt(WIDTH);
+						int edge = rand.nextInt(4);
+						if(edge == 1) {
+							last = struct.find(endX, 0);
+						} else if(edge == 2) {
+							last = struct.find(WIDTH - 1, endY);
+						} else if(edge == 3) {
+							last = struct.find(endX, HEIGHT - 1);
+						} else {
+							last = struct.find(0, endY);
+						}
+						
+						int walls = 0;
+						if(last.up) {walls ++;}
+						if(last.down) {walls ++;}
+						if(last.right) {walls ++;}
+						if(last.left) {walls ++;}
+					
+						if(walls == 3 && last != start) {
+							last.finish = true;
+							break;
+						} 
+						
+					}
+					
+				}
+				
+				
 				graphic.repaint();
 				break;
 			}
@@ -244,6 +301,11 @@ public class MazeGen {
 	public boolean isDeadEnd(int x, int y) {
 		cell c = struct.find(x, y);
 		return c.deadEnd();
+	}
+	
+	public boolean isFinish(int x, int y) {
+		cell c = struct.find(x, y);
+		return c.isFinish();
 	}
 	
 

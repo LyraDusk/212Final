@@ -47,6 +47,9 @@ public class MazeGraphic extends JPanel {
 				if (this.gen.isStart(x, y)) {
 					g.setColor(Color.red);
 				}
+				if (this.gen.isFinish(x,y)) {
+					g.setColor(Color.orange);
+				}
 				//Fill in the square
 				int x_act = x * multiplier + multiplier/4;
 				int y_act = y * multiplier + multiplier/4;

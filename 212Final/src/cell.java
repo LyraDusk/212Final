@@ -25,6 +25,8 @@ public class cell {
 	
 	boolean deadend;
 	
+	boolean finish;
+	
 	public cell(int x, int y) {
 		this.x = x;
 		this.y = y;
@@ -34,6 +36,7 @@ public class cell {
 		left = true;
 		right = true;
 		deadend = false;
+		finish = false;
 
 	}
 	
@@ -59,6 +62,10 @@ public class cell {
 		} else { 
 			return true; 
 		}
+	}
+	
+	public boolean isFinish() {
+		return this.finish;
 	}
 	
 	//returns the logical x value
