@@ -35,6 +35,9 @@ public class MazeGen {
 	// list of dead end cells
 	List<cell> deadEnd;
 	
+	// list holding the cells on the longest route (for non-random finish solving)
+	List<cell> longestRoute;
+	
 	// current position
 	cell position;
 	
@@ -47,10 +50,25 @@ public class MazeGen {
 	// whether or not the generator has finished
 	static boolean finished = false;
 	
+	
+	/*
+	 * GENERATION CONTROLS
+	 */
+	
+	// Whether to randomly determine the finishing point, rather than
+	// using the farthest cell from start as the finishing point
+	static boolean randFinish = false;
+	
 	//True: Finishing point is always on an edge
 	//False: Finishing point could be edge or central
 	//The ending point is always a dead end with three walls.
+	//Only relevant if randFinish is true. 
 	static boolean edgeFinish = true;
+	
+	
+	//Shows the maze solution. ONLY WORKS FOR RANDFINISH FALSE.
+	static boolean showSolution = true;
+	
 	
 	// Initializing the maze generator
 	public MazeGen() {
@@ -61,7 +79,7 @@ public class MazeGen {
 		
 		MULT = 40;
 		
-		WAIT = 5;
+		WAIT = 10;
 		
 		struct = new CellStructure(WIDTH, HEIGHT);
 		
@@ -116,11 +134,16 @@ public class MazeGen {
 		//startx = 0;
 		start = struct.find(startx, starty);
 		start.visited = true;
+		start.dist = 0;
 		
 		//set that starting spot to the current position
 		position = start;
 		visited.add(start);
         
+		int distanceCounter = 0;
+		int maxDist = 0;
+		cell furthestCell = null;
+		
 		mainloop: 
 		while (true) {
 			/*
@@ -148,6 +171,7 @@ public class MazeGen {
 					deadEnd.add(position);
 					position.deadend = true;
 					visited.remove(visited.size() - 1);
+					distanceCounter --;
 					position.visited = false;
 					checked.removeAll(checked);
 					if (visited.size() != 0) {
@@ -188,6 +212,15 @@ public class MazeGen {
 				if (!isVisited(newcell.getX(), newcell.getY()) && !isDeadEnd(newcell.getX(), 
 						newcell.getY()) && newcell.isWithinBounds(struct)) {
 					newCellFound = true;
+					distanceCounter ++;
+					// Update max distance counters
+					if(distanceCounter > maxDist) {
+						maxDist = distanceCounter;
+						furthestCell = newcell;
+						longestRoute = new ArrayList<>(visited);
+					}
+					newcell.dist = distanceCounter;
+					//System.out.println(distanceCounter);
 					checked.removeAll(checked);
 					//System.out.println("New cell found!");
 					// Remove the correct walls
@@ -215,8 +248,9 @@ public class MazeGen {
 			}
 			// Are we done?
 			if (finished == true) {
-				boolean finishFound = false;
 				
+				if(randFinish) {
+				boolean finishFound = false;
 				while (finishFound == false) {
 					if(!edgeFinish) {
 					int endY = rand.nextInt(HEIGHT);
@@ -263,7 +297,17 @@ public class MazeGen {
 					}
 					
 				}
+				}
 				
+				if(!randFinish) {
+					furthestCell.finish = true;
+					if(showSolution) {
+					for(cell c: longestRoute) {
+						c.longestroute = true;
+					}
+					}
+					break;
+				}
 				
 				graphic.repaint();
 				break;
@@ -279,6 +323,8 @@ public class MazeGen {
 		}
 		// Done!
 		System.out.println("Finished!");
+		//System.out.println("Max Distance from Start: " + maxDist);
+		
 	}
 		
 	
@@ -303,9 +349,19 @@ public class MazeGen {
 		return c.deadEnd();
 	}
 	
+	public int distFromStart(int x, int y) {
+		cell c = struct.find(x, y);
+		return c.distance();
+	}
+	
 	public boolean isFinish(int x, int y) {
 		cell c = struct.find(x, y);
 		return c.isFinish();
+	}
+	
+	public boolean isSolution(int x, int y) {
+		cell c = struct.find(x, y);
+		return c.onLongest();
 	}
 	
 

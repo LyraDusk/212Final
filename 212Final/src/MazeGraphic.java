@@ -16,6 +16,11 @@ public class MazeGraphic extends JPanel {
 	CellStructure struct;
 	boolean setup = false;
 	
+	Color DEColor = Color.black;
+	Color VColor = Color.cyan;
+	Color StartColor = Color.red;
+	Color EndColor = Color.orange;
+	Color SolColor = Color.green;
 	//Gets a reference to the MazeGen and CellStructure (I didn't want to deal with overwriting the constructor)
 	public void getMaze(MazeGen maze) {
 		this.gen = maze;
@@ -37,31 +42,61 @@ public class MazeGraphic extends JPanel {
 		for (x = 0; x < xmax; x++) {
 			for (y = 0; y < ymax; y ++) {
 				//Sets the color to correspond to cell status (Blue is visited, Cyan is start, Orange is dead end)
+				
+				cell current = struct.find(x, y);
+				Color cellColor = null;
+				
 				if (this.gen.isVisited(x,y)) {
-					g.setColor(Color.cyan);
+					cellColor = VColor;
 				} else if (gen.isDeadEnd(x, y)) {
-					g.setColor(Color.black);
+					cellColor = DEColor;
 				} else {
-					g.setColor(Color.white);
+					cellColor = Color.white;
 				} 
+				if (this.gen.isSolution(x, y)) {
+					cellColor = SolColor;
+				}
 				if (this.gen.isStart(x, y)) {
-					g.setColor(Color.red);
+					cellColor = StartColor;
 				}
 				if (this.gen.isFinish(x,y)) {
-					g.setColor(Color.orange);
+					cellColor = EndColor;
 				}
+				g.setColor(cellColor);
 				//Fill in the square
 				int x_act = x * multiplier + multiplier/4;
 				int y_act = y * multiplier + multiplier/4;
 				g.fillRect(x_act, y_act, multiplier/2,multiplier/2);
 				
+				
 				//Fill in the missing walls
 				cell currentpos = this.struct.find(x, y);
 				if (currentpos.down == false) {
+					cell lower = struct.find(x, y + 1);
+					if (lower.deadend && !lower.longestroute) {
+						g.setColor(DEColor);
+					}
+					if(this.gen.isStart(x, y + 1)) {
+						g.setColor(StartColor);
+					} else if (this.gen.isFinish(x, y + 1)) {
+						g.setColor(EndColor);
+					}
+					
 					int ywall = y * multiplier + multiplier * 3/4;
 					g.fillRect(x_act, ywall, multiplier/2, multiplier/2);
+					g.setColor(cellColor);
 				} 
 				if (currentpos.right == false) {
+					cell right = struct.find(x + 1, y);
+					if (right.deadend && !right.onLongest()) {
+						g.setColor(DEColor);
+					} 
+					if(this.gen.isStart(x + 1, y)) {
+						g.setColor(StartColor);
+					} else if (this.gen.isFinish(x + 1, y)) {
+						g.setColor(EndColor);
+					}
+					
 					int xwall = x * multiplier + multiplier * 3/4;
 					g.fillRect(xwall, y_act, multiplier/2, multiplier/2);
 				} 

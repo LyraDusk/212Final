@@ -10,6 +10,8 @@ public class cell {
 	//Logical y
 	int y;
 	
+	//distance from start of maze
+	int dist;
 	
 	//The walls, whether it has each wall
 	boolean up;
@@ -27,6 +29,8 @@ public class cell {
 	
 	boolean finish;
 	
+	boolean longestroute;
+	
 	public cell(int x, int y) {
 		this.x = x;
 		this.y = y;
@@ -37,6 +41,8 @@ public class cell {
 		right = true;
 		deadend = false;
 		finish = false;
+		dist = -1;
+		longestroute = false;
 
 	}
 	
@@ -48,6 +54,10 @@ public class cell {
 	//Whether the cell has been visited
 	public boolean visited() {
 		return this.visited;
+	}
+	
+	public int distance() {
+		return this.dist;
 	}
 	
 	//Returns the logical y value
@@ -66,6 +76,10 @@ public class cell {
 	
 	public boolean isFinish() {
 		return this.finish;
+	}
+	
+	public boolean onLongest() {
+		return this.longestroute;
 	}
 	
 	//returns the logical x value
