@@ -67,8 +67,14 @@ public class MazeGen {
 	
 	
 	//Shows the maze solution. ONLY WORKS FOR RANDFINISH FALSE.
-	static boolean showSolution = true;
+	static boolean showSolution = false;
 	
+	//Turns on and off line smoothing
+	static boolean lineSmoothing = true;
+	
+	//Smoothing level
+	//0-20, recommended 5-10. 0 is smoothing off, 20 draws spirals. 
+	static int smoothLevel = 7;
 	
 	// Initializing the maze generator
 	public MazeGen() {
@@ -79,7 +85,7 @@ public class MazeGen {
 		
 		MULT = 40;
 		
-		WAIT = 10;
+		WAIT = 0;
 		
 		struct = new CellStructure(WIDTH, HEIGHT);
 		
@@ -143,6 +149,7 @@ public class MazeGen {
 		int distanceCounter = 0;
 		int maxDist = 0;
 		cell furthestCell = null;
+		String lastPos = "up";
 		
 		mainloop: 
 		while (true) {
@@ -189,17 +196,24 @@ public class MazeGen {
 					position = visited.get(visited.size() - 1);
 				}
 				String direction = wallIndices.get(wallIndex);
+				if(lineSmoothing && rand.nextInt(20) <= smoothLevel && !checked.contains(lastPos) ) {
+					direction = lastPos;
+				}
 				
 				//Get the cell in the chosen direction
 				try {
 					if(direction.equals("up")) {
 						newcell = struct.find(position.getX(), position.getY() - 1);
+						lastPos = "up";
 					} else if(direction.equals("down")) {
 						newcell = struct.find(position.getX(), position.getY() + 1);
+						lastPos = "down";
 					} else if(direction.equals("left")) {
 						newcell = struct.find(position.getX() - 1, position.getY());
+						lastPos = "left";
 					} else/* if(direction.equals("right"))*/ {
 						newcell = struct.find(position.getX() + 1, position.getY());
+						lastPos = "right";
 					}
 				} catch (IndexOutOfBoundsException e) {
 					newCellFound = false;
