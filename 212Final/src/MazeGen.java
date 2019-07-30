@@ -76,6 +76,9 @@ public class MazeGen {
 	//0-20, recommended 5-10. 0 is smoothing off, 20 draws spirals. 
 	static int smoothLevel = 7;
 	
+	// Whether or not to add a game aspect: allow clicking cells to win
+	static boolean game = true;
+	
 	// Initializing the maze generator
 	public MazeGen() {
 		
@@ -114,10 +117,12 @@ public class MazeGen {
 		frame.setSize(WIDTH * MULT + 20, HEIGHT * MULT + 40);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
+		if(game) {
 		ClickSensor sensor = new ClickSensor();
 		frame.addMouseListener(sensor);
 		sensor.importMazeGen(gen);
 		sensor.importGraphic(graphic);
+		}
 		//generate the maze
 		gen.generateMaze(graphic);
 		  
