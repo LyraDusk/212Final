@@ -114,7 +114,10 @@ public class MazeGen {
 		frame.setSize(WIDTH * MULT + 20, HEIGHT * MULT + 40);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
-		
+		ClickSensor sensor = new ClickSensor();
+		frame.addMouseListener(sensor);
+		sensor.importMazeGen(gen);
+		sensor.importGraphic(graphic);
 		//generate the maze
 		gen.generateMaze(graphic);
 		  
@@ -144,6 +147,7 @@ public class MazeGen {
 		
 		//set that starting spot to the current position
 		position = start;
+		start.start = true;
 		visited.add(start);
         
 		int distanceCounter = 0;
@@ -315,16 +319,16 @@ public class MazeGen {
 				
 				if(!randFinish) {
 					furthestCell.finish = true;
-					if(showSolution) {
+					//if(showSolution) {
 					for(cell c: longestRoute) {
 						c.longestroute = true;
 					}
-					}
+					//}
 					break;
 				}
 				
 				graphic.repaint();
-				break;
+				//break;
 			}
 			//Move position to the new cell, mark as visited
 			position = newcell;
@@ -378,5 +382,27 @@ public class MazeGen {
 		return c.onLongest();
 	}
 	
+	public boolean isClicked(int x, int y) {
+		cell c = struct.find(x, y);
+		return c.getClicked();
+	}
+	
+	public boolean isCorrect(int x, int y) {
+		cell c = struct.find(x, y);
+		return c.clickCorrect();
+	}
+	
+	public boolean checkAnswer() {
+		cell c = null;
+		for(int x = 0; x < WIDTH; x++) {
+			for(int y = 0; y < HEIGHT; y++) {
+				c = struct.find(x, y);
+				if(!c.clickCorrect()) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 
 }

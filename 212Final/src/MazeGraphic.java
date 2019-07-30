@@ -6,6 +6,7 @@ import javax.swing.JPanel;
 /*
  * The graphical engine of the generator
  */
+@SuppressWarnings("serial")
 public class MazeGraphic extends JPanel {
 	int x = 0;
 	int y = 0;
@@ -21,6 +22,7 @@ public class MazeGraphic extends JPanel {
 	Color StartColor = Color.red;
 	Color EndColor = Color.orange;
 	Color SolColor = Color.green;
+	Color ClickColor = Color.pink;
 	//Gets a reference to the MazeGen and CellStructure (I didn't want to deal with overwriting the constructor)
 	public void getMaze(MazeGen maze) {
 		this.gen = maze;
@@ -38,12 +40,13 @@ public class MazeGraphic extends JPanel {
 		g.fillRect(0,0,xmax * multiplier,ymax * multiplier);
 		g.setColor(Color.white);
 		
+		
 		// For every grid square (Every x, and then every y for each x)
 		for (x = 0; x < xmax; x++) {
 			for (y = 0; y < ymax; y ++) {
 				//Sets the color to correspond to cell status (Blue is visited, Cyan is start, Orange is dead end)
 				
-				cell current = struct.find(x, y);
+				//cell current = struct.find(x, y);
 				Color cellColor = null;
 				
 				if (this.gen.isVisited(x,y)) {
@@ -53,8 +56,11 @@ public class MazeGraphic extends JPanel {
 				} else {
 					cellColor = Color.white;
 				} 
-				if (this.gen.isSolution(x, y)) {
+				if (this.gen.isSolution(x, y) && MazeGen.showSolution) {
 					cellColor = SolColor;
+				}
+				if (this.gen.isClicked(x,y)) {
+					cellColor = ClickColor;
 				}
 				if (this.gen.isStart(x, y)) {
 					cellColor = StartColor;
@@ -73,7 +79,7 @@ public class MazeGraphic extends JPanel {
 				cell currentpos = this.struct.find(x, y);
 				if (currentpos.down == false) {
 					cell lower = struct.find(x, y + 1);
-					if (lower.deadend && !lower.longestroute) {
+					if (lower.deadend && !lower.longestroute && !lower.clicked) {
 						g.setColor(DEColor);
 					}
 					if(this.gen.isStart(x, y + 1)) {
@@ -88,7 +94,7 @@ public class MazeGraphic extends JPanel {
 				} 
 				if (currentpos.right == false) {
 					cell right = struct.find(x + 1, y);
-					if (right.deadend && !right.onLongest()) {
+					if (right.deadend && !right.onLongest() && !right.clicked) {
 						g.setColor(DEColor);
 					} 
 					if(this.gen.isStart(x + 1, y)) {

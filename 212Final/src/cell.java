@@ -29,7 +29,11 @@ public class cell {
 	
 	boolean finish;
 	
+	boolean start;
+	
 	boolean longestroute;
+	
+	boolean clicked;
 	
 	public cell(int x, int y) {
 		this.x = x;
@@ -43,7 +47,13 @@ public class cell {
 		finish = false;
 		dist = -1;
 		longestroute = false;
+		clicked = false;
+		start = false;
 
+	}
+	
+	public void toggleClick() {
+		clicked = !clicked;
 	}
 	
 	//Whether the cell is a dead end
@@ -86,4 +96,15 @@ public class cell {
 	public int getX() {
 		return x;
 	}
+	
+	public boolean getClicked() {
+		return clicked;
+	}
+	
+	public boolean clickCorrect() {
+		if(!finish && !start) {
+			return clicked == longestroute;
+		} else {return true;}
+	}
+	
 }
