@@ -1,7 +1,9 @@
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.Set;
 
 import javax.swing.JFrame;
@@ -50,6 +52,11 @@ public class MazeGen {
 	// whether or not the generator has finished
 	static boolean finished = false;
 	
+	static volatile boolean solved = false;
+	
+	static boolean end = false;
+	
+	static ClickSensor sensor;
 	
 	/*
 	 * GENERATION CONTROLS
@@ -98,6 +105,8 @@ public class MazeGen {
 		
 		finished = false;
 		
+		sensor = new ClickSensor();
+		
 		//setup the wallindices list
 		wallIndices.add("up");
 		wallIndices.add("down");
@@ -118,18 +127,47 @@ public class MazeGen {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
 		if(game) {
-		ClickSensor sensor = new ClickSensor();
+		
 		frame.addMouseListener(sensor);
+		frame.addMouseMotionListener(sensor);
 		sensor.importMazeGen(gen);
 		sensor.importGraphic(graphic);
 		}
-		//generate the maze
+		
+		//gameloop:
+		while(!end) {
 		gen.generateMaze(graphic);
-		  
+		solved = false;
+		if(!game) {end = true;}
+		graphic.ClickColor = Color.blue;
+		graphic.repaint();
+		
+		while(!solved) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {}
+		}
+		
+		System.out.println("Continue? Y/N");
+		Scanner scanner = new Scanner(System.in);
+		String input = scanner.nextLine();
+		
+		if(input.equals("Y") || input.equals("y")) {
+			continue;
+		} else {
+			end = true;
+			System.out.println("Goodbye!");
+			frame.setVisible(false);
+			frame.dispose();
+		}
+		
+		
+		}
 		
 	}
 	
 	public void generateMaze(MazeGraphic graphic) {
+		finished = false;
 		//Initialize the grid
 		for(int x = 0; x < WIDTH; x++) {
 			System.out.println("Initializing grid row " + (x + 1) + "/" + WIDTH);
@@ -347,6 +385,10 @@ public class MazeGen {
 		// Done!
 		System.out.println("Finished!");
 		//System.out.println("Max Distance from Start: " + maxDist);
+		
+		
+		
+		
 		
 	}
 		

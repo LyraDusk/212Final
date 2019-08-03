@@ -22,7 +22,7 @@ public class MazeGraphic extends JPanel {
 	Color StartColor = Color.red;
 	Color EndColor = Color.orange;
 	Color SolColor = Color.green;
-	Color ClickColor = Color.pink;
+	Color ClickColor = Color.blue;
 	//Gets a reference to the MazeGen and CellStructure (I didn't want to deal with overwriting the constructor)
 	public void getMaze(MazeGen maze) {
 		this.gen = maze;
