@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 
 import javax.swing.JPanel;
@@ -23,6 +24,9 @@ public class MazeGraphic extends JPanel {
 	Color EndColor = Color.orange;
 	Color SolColor = Color.green;
 	Color ClickColor = Color.blue;
+	
+	Color YesColor = Color.green;
+	Color NoColor = Color.red;
 	//Gets a reference to the MazeGen and CellStructure (I didn't want to deal with overwriting the constructor)
 	public void getMaze(MazeGen maze) {
 		this.gen = maze;
@@ -36,6 +40,9 @@ public class MazeGraphic extends JPanel {
 	public void paint(Graphics g) {
 		super.paint(g);
 		
+		
+		if(MazeGen.inGUI == false) {
+			
 		g.setColor(Color.lightGray);
 		g.fillRect(0,0,xmax * multiplier,ymax * multiplier);
 		g.setColor(Color.white);
@@ -109,4 +116,28 @@ public class MazeGraphic extends JPanel {
 			}
 		}
 	}
+		// If we're in the GUI
+		else {
+			int gwidth = xmax * multiplier;
+			int gheight = ymax * multiplier;
+			Font currentFont = g.getFont();
+			Font newFont = currentFont.deriveFont(currentFont.getSize() * 1.4F);
+			g.setFont(newFont);
+			g.setColor(Color.lightGray);
+			g.fillRect(0,0,gwidth + 40,gheight + 40);
+			g.setColor(Color.black);
+			
+			
+			g.drawString("Play Again?", gwidth/2 - multiplier, gheight/4);
+			g.setColor(YesColor);
+			g.fillRect(gwidth/3, gheight/2 - multiplier, gwidth/3, multiplier * 2);
+			
+			g.setColor(NoColor);
+			g.fillRect(gwidth/3, gheight/3 * 2, gwidth/3, multiplier * 2);
+			g.setColor(Color.black);
+			
+			g.drawString("Yes", gwidth/2 - multiplier / 2, gheight/2 + 5);
+			g.drawString("No", gwidth/2 - multiplier/2, gheight/3 * 2 + multiplier+multiplier/4);
+		}
+}
 }

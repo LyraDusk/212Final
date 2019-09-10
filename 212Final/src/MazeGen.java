@@ -58,6 +58,11 @@ public class MazeGen {
 	
 	static ClickSensor sensor;
 	
+	static boolean inGUI = true;
+	
+	boolean sensorOutput;
+	
+	
 	/*
 	 * GENERATION CONTROLS
 	 */
@@ -134,7 +139,7 @@ public class MazeGen {
 		sensor.importGraphic(graphic);
 		}
 		
-		//gameloop:
+		gameloop:
 		while(!end) {
 		gen.generateMaze(graphic);
 		solved = false;
@@ -148,6 +153,24 @@ public class MazeGen {
 			} catch (InterruptedException e) {}
 		}
 		
+		inGUI = true;
+		graphic.repaint();
+		while(inGUI) {
+			//if the click sensor says yes, continue the game and reset it
+			if(gen.sensorOutput == true) {
+				inGUI = false;
+				continue gameloop;
+			}
+			//if no, then exit the game
+			if(gen.sensorOutput == false) {
+				inGUI = false;
+				end = true;
+				System.out.println("Goodbye!");
+				frame.setVisible(false);
+				frame.dispose();
+			}
+		}
+		/*
 		System.out.println("Continue? Y/N");
 		Scanner scanner = new Scanner(System.in);
 		String input = scanner.nextLine();
@@ -160,7 +183,7 @@ public class MazeGen {
 			frame.setVisible(false);
 			frame.dispose();
 		}
-		
+		*/
 		
 		}
 		
