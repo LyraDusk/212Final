@@ -58,13 +58,13 @@ public class ClickSensor extends Frame implements MouseListener, MouseMotionList
 			if(x<gwidth/3 * 2 && x > gwidth/3) {
 				if(y < gheight/2 + mult && y > gheight/2 - mult) {
 					graphic.YesColor = Color.green.darker();
-					generator.sensorOutput = true;
+					generator.sensorOutput = 0;
 					
 				}
 				
 				if(y>gheight/3*2 && y < gheight/3*2 + 2*mult) {
 					graphic.NoColor = Color.red.darker();
-					generator.sensorOutput = false;
+					generator.sensorOutput = 1;
 				}
 			}
 			
@@ -80,12 +80,12 @@ public class ClickSensor extends Frame implements MouseListener, MouseMotionList
 		press = false;
 		if(x<gwidth/3 * 2 && x > gwidth/3) {
 			if(y < gheight/2 + mult && y > gheight/2 - mult) {
-				generator.sensorOutput = true;
+				generator.sensorOutput = 0;
 				//MazeGen.inGUI = false;
 			}
 			
 			if(y>gheight/3*2 && y < gheight/3*2 + 2*mult) {
-				generator.sensorOutput = false;
+				generator.sensorOutput = 1;
 				//MazeGen.inGUI = false;
 			}
 			graphic.YesColor = Color.green;

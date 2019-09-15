@@ -58,9 +58,9 @@ public class MazeGen {
 	
 	static ClickSensor sensor;
 	
-	static boolean inGUI = true;
+	static boolean inGUI = false;
 	
-	boolean sensorOutput;
+	int sensorOutput = -1;
 	
 	
 	/*
@@ -144,7 +144,7 @@ public class MazeGen {
 		gen.generateMaze(graphic);
 		solved = false;
 		if(!game) {end = true;}
-		graphic.ClickColor = Color.blue;
+		graphic.ClickColor = Color.yellow;
 		graphic.repaint();
 		
 		while(!solved) {
@@ -157,12 +157,14 @@ public class MazeGen {
 		graphic.repaint();
 		while(inGUI) {
 			//if the click sensor says yes, continue the game and reset it
-			if(gen.sensorOutput == true) {
+			if(gen.sensorOutput == 0) {
 				inGUI = false;
+				gen.sensorOutput = -1;
 				continue gameloop;
+				
 			}
 			//if no, then exit the game
-			if(gen.sensorOutput == false) {
+			if(gen.sensorOutput == 1) {
 				inGUI = false;
 				end = true;
 				System.out.println("Goodbye!");
