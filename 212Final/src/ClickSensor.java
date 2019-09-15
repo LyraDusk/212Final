@@ -56,13 +56,13 @@ public class ClickSensor extends Frame implements MouseListener, MouseMotionList
 		if(MazeGen.inGUI) {
 			
 			if(x<gwidth/3 * 2 && x > gwidth/3) {
-				if(y < gheight/2 + mult && y > gheight/2 - mult) {
+				if(y < gheight/2 + gheight/10 + gheight/15&& y > gheight/2 - gheight/10 + gheight/15) {
 					graphic.YesColor = Color.green.darker();
 					generator.sensorOutput = 0;
 					
 				}
 				
-				if(y>gheight/3*2 && y < gheight/3*2 + 2*mult) {
+				if(y>gheight/3*2 + gheight/15 && y < gheight/3*2 + gheight/5 + gheight/15) {
 					graphic.NoColor = Color.red.darker();
 					generator.sensorOutput = 1;
 				}
@@ -79,14 +79,14 @@ public class ClickSensor extends Frame implements MouseListener, MouseMotionList
 		int y = e.getY();
 		press = false;
 		if(x<gwidth/3 * 2 && x > gwidth/3) {
-			if(y < gheight/2 + mult && y > gheight/2 - mult) {
+			if(y < gheight/2 + gheight/10 + gheight/15 && y > gheight/2 - gheight/10 + gheight/15) {
 				generator.sensorOutput = 0;
-				//MazeGen.inGUI = false;
+				
 			}
 			
-			if(y>gheight/3*2 && y < gheight/3*2 + 2*mult) {
+			if(y>gheight/3*2 + gheight/15 && y < gheight/3*2 + gheight/5 + gheight/15) {
 				generator.sensorOutput = 1;
-				//MazeGen.inGUI = false;
+				
 			}
 			graphic.YesColor = Color.green;
 			graphic.NoColor = Color.red;

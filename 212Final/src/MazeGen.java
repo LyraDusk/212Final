@@ -52,14 +52,19 @@ public class MazeGen {
 	// whether or not the generator has finished
 	static boolean finished = false;
 	
+	//Triggers the solved event
 	static volatile boolean solved = false;
 	
+	//triggers the window closing
 	static boolean end = false;
 	
+	//detects mouse movement and clicks
 	static ClickSensor sensor;
 	
+	//whether or not the gui is open
 	static boolean inGUI = false;
 	
+	// input from the gui buttons
 	int sensorOutput = -1;
 	
 	
@@ -152,14 +157,21 @@ public class MazeGen {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {}
 		}
-		
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {}
 		inGUI = true;
 		graphic.repaint();
 		while(inGUI) {
 			//if the click sensor says yes, continue the game and reset it
 			if(gen.sensorOutput == 0) {
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {}
 				inGUI = false;
 				gen.sensorOutput = -1;
+				graphic.YesColor = Color.green;
+				
 				continue gameloop;
 				
 			}
@@ -195,7 +207,7 @@ public class MazeGen {
 		finished = false;
 		//Initialize the grid
 		for(int x = 0; x < WIDTH; x++) {
-			System.out.println("Initializing grid row " + (x + 1) + "/" + WIDTH);
+			//System.out.println("Initializing grid row " + (x + 1) + "/" + WIDTH);
 			for(int y = 0; y < HEIGHT; y ++) {
 				cell c = new cell(x, y);
 				struct.register(c);

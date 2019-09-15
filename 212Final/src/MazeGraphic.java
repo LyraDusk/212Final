@@ -128,16 +128,16 @@ public class MazeGraphic extends JPanel {
 			g.setColor(Color.black);
 			
 			
-			g.drawString("Play Again?", gwidth/2 - multiplier, gheight/4);
+			g.drawString("Play Again?", gwidth/2 - gwidth/8, gheight/4);
 			g.setColor(YesColor);
-			g.fillRect(gwidth/3, gheight/2 - multiplier, gwidth/3, multiplier * 2);
+			g.fillRect(gwidth/3, gheight/2 - gheight/10, gwidth/3, gheight/5);
 			
 			g.setColor(NoColor);
-			g.fillRect(gwidth/3, gheight/3 * 2, gwidth/3, multiplier * 2);
+			g.fillRect(gwidth/3, gheight/3 * 2, gwidth/3, gheight/5);
 			g.setColor(Color.black);
 			
-			g.drawString("Yes", gwidth/2 - multiplier / 2, gheight/2 + 5);
-			g.drawString("No", gwidth/2 - multiplier/2, gheight/3 * 2 + multiplier+multiplier/4);
+			g.drawString("Yes", gwidth/2 - gwidth/24, gheight/2 + gheight/60);
+			g.drawString("No", gwidth/2 - gwidth/28, gheight/3 * 2 + gheight/9);
 		}
 }
 }
