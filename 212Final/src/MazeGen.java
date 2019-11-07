@@ -149,7 +149,7 @@ public class MazeGen {
 		gen.generateMaze(graphic);
 		solved = false;
 		if(!game) {end = true;}
-		graphic.ClickColor = Color.yellow;
+		graphic.ClickColor = Color.cyan;
 		graphic.repaint();
 		
 		while(!solved) {
